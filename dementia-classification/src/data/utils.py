@@ -1,6 +1,7 @@
 import os
-from hyperpyyaml import load_hyperpyyaml
 import subprocess
+from hyperpyyaml import load_hyperpyyaml
+
 
 def runcmd(cmd, verbose = False, *args, **kwargs):
     """

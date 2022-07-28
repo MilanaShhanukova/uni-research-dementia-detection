@@ -1,12 +1,16 @@
 import json
 import os
 import sys
+
+import pandas as pd
+
 sys.path.insert(0, r'C:\Users\Милана\PycharmProjects\course_work\CHAFile')
 from CHAFile.ChaFile import ChaFile
 from utils import load_config, get_files_names
+from tqdm import tqdm
 
 
-class ChaPreprocesser:
+class MetaPreprocesser:
     def __init__(self, config_path):
         self.config = load_config(config_path)
 
@@ -18,8 +22,6 @@ class ChaPreprocesser:
         :return: basic parameters of one sample.
         """
         clean_info = {'age': 65, 'gender': '', 'condition': base_cond}
-        if not head_info:
-            return {'condition': base_cond}
         for person_info in head_info:
             person_info = person_info.split('|')
             for idx, info_seg in enumerate(person_info):
@@ -33,7 +35,7 @@ class ChaPreprocesser:
                     clean_info['participant'] = int(info_seg)
         return clean_info
 
-    def get_meta_info(self, cha_path: str, base_cond:'Dementia') -> list:
+    def get_meta_info_cha(self, cha_path: str, base_cond:'Dementia') -> list:
         """
         Get basic info of one sample and its lines with certain seconds.
         :param cha_path: full path to cha info.
@@ -42,29 +44,57 @@ class ChaPreprocesser:
         """
         cha_data = ChaFile(cha_path)
         lines = cha_data.getLinesBySpeakers()
-        if not lines:
+        try:
+            lines = lines['PAR']
+        except KeyError:
             return [[], []]
-        lines = lines['PAR']
+
+        if base_cond == 'both':
+            # condition is mentioned in the path, cd for adress dataset
+            base_cond = 'Dementia' if 'Dementia' in cha_path or 'cd' in cha_path else 'Control'
+
         header_info = self.parse_header(cha_data.speakers_info, base_cond)
         return [[header_info], [dict(text=line['emisión'], seconds=line['bullet'])
                                 for line in lines if 'bullet' in line]]
 
-    def main(self) -> dict:
+    def get_meta_info_csv(self, csv_path: str, base_cond:'Dementia'):
+        if base_cond == 'both':
+            # condition is mentioned in the path, cd for adress dataset
+            base_cond = 'Control' if 'Control' in csv_path or 'cn' in csv_path else 'Dementia'
+
+        basic_info = {'age': 65, 'gender': '', 'condition': base_cond}
+        data = pd.read_csv(csv_path)
+        data = data[data['speaker'] == 'PAR']
+
+        seconds_pairs = [[int(start), int(end)] for start, end in zip(data['begin'], data['end'])]
+        return [[basic_info], [dict(text='', seconds=seconds) for seconds in seconds_pairs]]
+
+    def main(self, mode):
         """
         Preprocess all cha files in all directory to one json file.
         Get rid of other unuseful parameters and filter out lines of participant.
-        :return:
         """
-        for dataset_name, base_cond in self.config['datasets_info'].items():
+        for dataset_name, base_cond in tqdm(self.config['datasets_info'].items()):
+            print(f'Now dataset {dataset_name} is processed')
+
             info = {}
-            cha_folder_path = self.make_path(self.config, dataset_name, 'cha_folder')
-            cha_paths = get_files_names(cha_folder_path, '.cha')
-            for cha_p in cha_paths:
-                short_name = cha_p.split("\\")[-1][:-4]
-                info[short_name] = self.get_meta_info(cha_p, base_cond)
+            if self.config['dataset_type'] != 'adress':
+                cha_folder_path = self.make_path(self.config, dataset_name, 'cha_folder')
+                meta_paths = get_files_names(cha_folder_path, '.cha')
+            else:
+                meta_paths = get_files_names(self.config['raw_data_main_dir'], f'.{mode}')
+
+            if mode == 'cha':
+                for cha_p in meta_paths:
+                    short_name = cha_p.split("\\")[-1][:-4]
+                    info[short_name] = self.get_meta_info_cha(cha_p, base_cond)
+            elif mode == 'csv':
+                for csv_p in meta_paths:
+                    short_name = csv_p.split("\\")[-1][:-4]
+                    info[short_name] = self.get_meta_info_csv(csv_p, base_cond)
+
 
             save_path = self.make_path(self.config, dataset_name, 'json')
-            print(save_path)
             with open(save_path, "w") as f:
                 json.dump(info, f)
 
@@ -79,7 +109,7 @@ class ChaPreprocesser:
         """
         dir_path = config['raw_data_main_dir']
         if mode == 'json':
-            path_ = os.path.join(dir_path, dataset_name, dataset_name + '.json')
+            path_ = os.path.join(dir_path, dataset_name + '.json')
             return path_
         elif mode == 'cha_folder':
             path_ = os.path.join(dir_path, dataset_name, 'meta_cha')

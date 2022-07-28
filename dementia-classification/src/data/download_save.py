@@ -2,7 +2,7 @@ from utils import load_config, runcmd
 import os
 
 
-def download_pipeline(config_path: str, user: str, password: str, main_dir=r'C:\Users\Милана\PycharmProjects\course_work\dementia-classification\data\raw'):
+def download_pipeline(config_path: str, user: str, password: str, modes=['audio', 'meta'], main_dir=r''):
     """
     Download and save meta data and audio for datasets names in folders.
     :param config_path: full path to configuration file with raw data path and names of datasets
@@ -17,15 +17,18 @@ def download_pipeline(config_path: str, user: str, password: str, main_dir=r'C:\
         save_path_folder = generate_save_path(main_dir, d_name)
 
         #download and save audio
-        download_path_audio = generate_download_path(d_name, '')
-        save_path_audio = generate_save_path(main_dir, d_name, 'audio')
-        runcmd(f'wget --http-user={user} --http-password={password} -q -r -np -nH --cut-dirs=2 -A *.mp3 {download_path_audio} -P {save_path_audio}')
+        if 'audio' in modes:
+            download_path_audio = generate_download_path(d_name, '')
+            print(download_path_audio)
+            save_path_audio = generate_save_path(main_dir, d_name, 'audio')
+            runcmd(f'wget --http-user={user} --http-password={password} -q -r -np -nH --cut-dirs=2 -A  *.mp4 {download_path_audio} -P {save_path_audio}')
 
         # generate and save meta files
-        download_path_meta_zip = generate_download_path(d_name, 'zip')
-        save_path_meta = generate_save_path(main_dir, d_name, 'meta_cha')
-        runcmd(f'wget --http-user={user} --http-password={password} {download_path_meta_zip} -P {save_path_folder}')
-        runcmd(f'unzip {save_path_folder + d_name + ".zip"} -d {save_path_meta}')
+        if 'meta' in modes:
+            download_path_meta_zip = generate_download_path(d_name, 'zip')
+            save_path_meta = generate_save_path(main_dir, d_name, 'meta_cha')
+            runcmd(f'wget --http-user={user} --http-password={password} {download_path_meta_zip} -P {save_path_folder}')
+            runcmd(f'unzip {save_path_folder + d_name + ".zip"} -d {save_path_meta}')
 
 
 def generate_save_path(main_dir: str, dataset_name:str, data_type=''):
@@ -64,9 +67,7 @@ def generate_download_path(dataset_name: str, data_type='') -> str:
     download_path = main_dir + dataset_name + '/'
     return download_path
 
-if __name__ == '__main__':
-    # download
-    print('Start downloading files')
-    download_pipeline(r'C:\Users\Милана\PycharmProjects\course_work\dementia-classification\configs\constant_preprocess.yaml', 'broca', 'wernicke')
-    # get audio from video
 
+if __name__ == '__main__':
+    print('Start downloading files')
+    download_pipeline(r'', '', '', modes=['meta'])
