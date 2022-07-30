@@ -4,7 +4,7 @@ import sys
 
 import pandas as pd
 
-sys.path.insert(0, r'C:\Users\Милана\PycharmProjects\course_work\CHAFile')
+sys.path.insert(0, r'')
 from CHAFile.ChaFile import ChaFile
 from utils import load_config, get_files_names
 from tqdm import tqdm
