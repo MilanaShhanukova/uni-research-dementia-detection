@@ -3,7 +3,7 @@ import torch.nn.functional as F
 
 class ConvNet(nn.Module):
     def __init__(self):
-        super(Net2, self).__init__()
+        super(ConvNet, self).__init__()
         self.conv1 = nn.Conv2d(1, 128, 3)
         self.bn1 = nn.BatchNorm2d(128)
         self.pool1 = nn.MaxPool2d(5)
