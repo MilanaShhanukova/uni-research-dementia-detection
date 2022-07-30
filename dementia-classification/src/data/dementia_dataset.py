@@ -61,11 +61,3 @@ class AudioDatasetExternal(Dataset):
                 shortage = config['sr'] * config['per_second'] - chunk.shape[1]
                 chunks[idx] = torch.nn.functional.pad(chunk, (0, shortage))
         return chunks
-
-
-
-train_dataset = AudioDatasetExternal(r'C:\Users\Милана\PycharmProjects\course_work\dementia-classification\configs\train_spectrogram_example.yaml',
-                                     'adress')
-
-dataloader = DataLoader(train_dataset, batch_size=4)
-print(next(iter(dataloader)))
