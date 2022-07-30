@@ -1,10 +1,11 @@
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 import numpy as np
 import pandas as pd
 
 import torch
 import torchaudio
 from utils import load_config, get_files_names
+
 
 
 class AudioDatasetExternal(Dataset):
@@ -17,9 +18,14 @@ class AudioDatasetExternal(Dataset):
 
         self.speakers_ids = pd.read_csv(self.config['speakers_ids_path'])
         self.features, self.labels = self.get_data()
-        print(len(self.labels))
 
-    def get_data(self, ):
+    def __len__(self):
+        return len(self.labels)
+
+    def __getitem__(self, idx):
+        return {'features': self.features[idx], 'label': self.labels[idx]}
+
+    def get_data(self):
         all_features, all_labels = [], []
         if self.dataset_type == 'adress':
             audio_paths = get_files_names(self.config['adress_path'], 'wav')
@@ -56,11 +62,10 @@ class AudioDatasetExternal(Dataset):
                 chunks[idx] = torch.nn.functional.pad(chunk, (0, shortage))
         return chunks
 
-    def __len__(self):
-        return len(self.labels)
 
-    def __getitem(self, idx):
-        return {'features': self.features[idx], 'label': self.labels[idx]}
 
-train_dataset = AudioDataset(r'C:\Users\Милана\PycharmProjects\course_work\dementia-classification\configs\train_spectrogram_example.yaml', 'fold_1')
+train_dataset = AudioDatasetExternal(r'C:\Users\Милана\PycharmProjects\course_work\dementia-classification\configs\train_spectrogram_example.yaml',
+                                     'adress')
 
+dataloader = DataLoader(train_dataset, batch_size=4)
+print(next(iter(dataloader)))
