@@ -1,4 +1,4 @@
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 import numpy as np
 import pandas as pd
 
@@ -7,41 +7,50 @@ import torchaudio
 from utils import load_config, get_files_names
 
 
-
 class AudioDatasetExternal(Dataset):
-    def __init__(self, config_path, dataset_type, fold='fold_1', mode='train'):
-        self.config = load_config(config_path)
+    def __init__(self, config_path, dataset_type, fold='fold_1', mode='train', config={}, mean=1.1215, std=71.9982,
+                 normalize=True, p2db=True):
+        if config:
+            self.config = config
+        else:
+            self.config = load_config(config_path)
+        self.label2num = {'Dementia': 1, 'Control': 0}
+
+        self.mean = mean
+        self.std = std
+        self.normalize_mode = normalize
 
         self.mode = mode
         self.fold = fold
         self.dataset_type = dataset_type
+        self.p2db = p2db
 
         self.speakers_ids = pd.read_csv(self.config['speakers_ids_path'])
         self.features, self.labels = self.get_data()
 
-    def __len__(self):
-        return len(self.labels)
-
-    def __getitem__(self, idx):
-        return {'features': self.features[idx], 'label': self.labels[idx]}
-
-    def get_data(self):
+    def get_data(self, ):
         all_features, all_labels = [], []
-        if self.dataset_type == 'adress':
-            audio_paths = get_files_names(self.config['adress_path'], 'wav')
+        if 'adress' in self.dataset_type:
+            idx = f"adress_path_{self.mode}"
+            audio_paths = pd.read_csv(self.config[idx])['merged_audio_path'].to_list()
         else:
             audio_paths = self.speakers_ids[self.speakers_ids[self.fold] == self.mode]['merged_audio_path'].to_list()
-        feature_extractor = self.config[f'{self.config["data_type"]}_extractor']
 
+        feature_extractor = self.config[f'{self.config["data_type"]}_extractor']
         for audio_p in audio_paths:
-            if self.dataset_type == 'adress':
+            if 'adress' in self.dataset_type:
                 label = 'Dementia' if 'cd' in audio_p else 'Control'
             else:
                 label = self.speakers_ids[self.speakers_ids['merged_audio_path'] == audio_p]['label'].item()
-
+            label = self.label2num[label]
             frames = self.split_audio_by_frames(audio_p, self.config)
 
             features = [feature_extractor(frame) for frame in frames if frame.shape[1] > 1]
+            if self.normalize_mode:
+                features = [self.normalize(f, self.mean, self.std) for f in features]
+            if self.p2db:
+                p2b_transformer = torchaudio.transforms.AmplitudeToDB()
+                features = [p2b_transformer(f) for f in features]
             if not features:
                 continue
             all_features.extend(features)
@@ -51,6 +60,7 @@ class AudioDatasetExternal(Dataset):
     @staticmethod
     def split_audio_by_frames(audio_path, config):
         audio, sr = torchaudio.load(audio_path, config['sr'])
+        audio = torch.mean(audio, 0).unsqueeze(0)
 
         split_size_samples = int(config['sr'] * config['per_second'])
         chunks = list(torch.split(audio, split_size_samples, dim=-1))
@@ -61,3 +71,12 @@ class AudioDatasetExternal(Dataset):
                 shortage = config['sr'] * config['per_second'] - chunk.shape[1]
                 chunks[idx] = torch.nn.functional.pad(chunk, (0, shortage))
         return chunks
+
+    def normalize(self, feature, mean, std):
+        return feature * std + mean
+
+    def __len__(self):
+        return len(self.labels)
+
+    def __getitem__(self, idx):
+        return {'features': self.features[idx], 'label': self.labels[idx]}
