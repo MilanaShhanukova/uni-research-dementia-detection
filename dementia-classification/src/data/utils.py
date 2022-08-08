@@ -1,4 +1,5 @@
 import os
+import glob
 import subprocess
 from hyperpyyaml import load_hyperpyyaml
 
@@ -43,3 +44,16 @@ def get_files_names(main_dir, ext):
             if name.endswith(ext):
                 all_files.append(os.path.join(root, name))
     return all_files
+
+
+def get_file_name(full_path: str, local_dir: str):
+    if '\\' in full_path:
+        name = full_path.split('\\')[-1]
+    else:
+        name = full_path.split('/')[-1]
+
+    try:
+        file_name = glob.glob(f'{local_dir}/**/{name}', recursive=True)[0]
+        return file_name
+    except IndexError:
+        return full_path
