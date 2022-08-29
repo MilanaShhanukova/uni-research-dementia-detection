@@ -1,7 +1,11 @@
 dementia-classification
 ==============================
 
-This project is designed to help diagnose dementia based on spontaneous speech and patients' speech during tasks. The data used in this project can be found in DementiaBank.
+This project is designed to help diagnose dementia based on spontaneous speech and patients' speech during tasks. The data used in this project can be found in [DementiaBank](https://dementia.talkbank.org/).
+
+Report of this project was rewarded the 3rd place on [HSE conference](https://nnov.hse.ru/studentconf/). 
+
+Attention models and pretrained SASST were used to classify samples of ADReSS 2020 and 2021. 
 
 Project Organization
 ------------
