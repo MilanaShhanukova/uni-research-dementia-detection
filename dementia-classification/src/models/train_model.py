@@ -9,33 +9,12 @@ from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_sc
 import warnings
 warnings.filterwarnings("ignore")
 
+
 def get_weight(data_path):
   data = pd.read_csv(data_path)
   values = data['label'].value_counts()
 
   return values['Control'] / values['Dementia']
-
-def infer_one_audio(audio_p, config, model, device, p2db=True):
-    sigmoid = nn.Sigmoid()
-    feature_extractor = config[f'{config["data_type"]}_extractor']
-    frames = AudioDatasetExternal.split_audio_by_frames(audio_p, config)
-
-    features = [feature_extractor(frame) for frame in frames if frame.shape[1] > 1]
-    if p2db:
-        p2b_transformer = torchaudio.transforms.AmplitudeToDB()
-        features = [p2b_transformer(f) for f in features]
-    all_results = []
-
-    for feature in features:
-      feature = feature.unsqueeze(0).to(device)
-      result = sigmoid(model(feature))
-      all_results.append(result.cpu())
-    all_results = torch.stack(all_results)
-
-    mean_r = torch.mean(all_results)
-    if mean_r > 0.5:
-      return 1, mean_r.item()
-    return 0, mean_r.item()
 
 
 def epoch_time(start_time, end_time):
@@ -124,8 +103,6 @@ def evaluate(model, iterator, criterion, device='cuda', transformer=False, thres
             f1 += f1_score(labels, result)
             recall += recall_score(labels, result)
             precision += precision_score(labels, result)
-
-    wandb.log({"loss_val": epoch_loss / (i+1), "accuracy_val": accuracy / (i+1), "f1_val": f1 / (i+1), "recall_val": recall / (i+1), "precision_val": precision / (i+1)})
 
     accuracy /= (i+1)
     f1 /= (i+1)
