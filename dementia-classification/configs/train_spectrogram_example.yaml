@@ -1,0 +1,59 @@
+seed: 2605
+__set_seed: !apply:torch.manual_seed [!ref <seed>]
+
+# audio params
+per_second: 5
+n_fft: 1024
+hop_length: 512
+center: True
+n_mels: 128
+n_mfcc: 32
+sr: 44100
+
+# params to get data
+speakers_ids_path: /content/dementia_classification/speakers_ids.csv
+data_type: melspectrogram
+split_data: True
+test_size: 0.2
+val_size: 0.2
+
+#dataloader params
+train_on: whole_data
+dataset_type: adress-2020-2021
+mode: train
+normalize: False
+mean: 0
+std: 0
+fold: fold_1
+p2db: True
+
+adress_path_train: /content/adress_2020_train.csv
+adress_path_val: /content/adress_2020_val.csv
+adress_path_test: /content/adress_2020_test.csv
+
+spectrogram_extractor: !new:torchaudio.transforms.Spectrogram
+  n_fft: !ref <n_fft>
+  hop_length: !ref <hop_length>
+  center: True
+
+melspectrogram_extractor: !new:torchaudio.transforms.MelSpectrogram
+  n_fft: !ref <n_fft>
+  hop_length: !ref <hop_length>
+  center: True
+  sample_rate: !ref <sr>
+  n_mels: !ref <n_mels>
+
+mfcc_extractor: !new:torchaudio.transforms.MFCC
+  sample_rate: !ref <sr>
+
+gfcc_extractor: !name:spafe.features.gfcc.gfcc
+  fs: !ref <sr>
+  normalize: 1
+
+
+
+
+
+
+
+

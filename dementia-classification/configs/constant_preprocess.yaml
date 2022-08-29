@@ -1,0 +1,9 @@
+raw_data_main_dir: ''
+processed_data_main_dir: ''
+speakers_database: ''
+illnesses: ['PPA-NOS', 'Control', 'Dementia', ]
+datasets_info: {'ADReSSo21-diagnosis-test': 'test'}
+dataset_type: 'adress'
+sr: 22050
+split_seconds: 5
+spectrograms_main_dir: ''
