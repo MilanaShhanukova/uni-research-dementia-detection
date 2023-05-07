@@ -19,7 +19,6 @@ def download_pipeline(config_path: str, user: str, password: str, modes=['audio'
         #download and save audio
         if 'audio' in modes:
             download_path_audio = generate_download_path(d_name, '')
-            print(download_path_audio)
             save_path_audio = generate_save_path(main_dir, d_name, 'audio')
             runcmd(f'wget --http-user={user} --http-password={password} -q -r -np -nH --cut-dirs=2 -A  *.mp4 {download_path_audio} -P {save_path_audio}')
 

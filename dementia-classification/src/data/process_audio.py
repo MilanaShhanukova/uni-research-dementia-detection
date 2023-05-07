@@ -18,7 +18,6 @@ class AudioPreprocesser:
 
         self.speakers_ids = pd.read_csv(self.config['speakers_database'])
 
-
     def split_audio_files(self, json_meta_path: str) -> Dict:
         """
         Split audio files by seconds and save in a corresponding directory. For all saved audio fragments save text
@@ -28,7 +27,6 @@ class AudioPreprocesser:
         """
         splitted_info = {'audio_split_path': [], 'utterances': []}
         meta_info = self.load_meta_info(json_meta_path)
-        print(meta_info)
         for audio_name in meta_info:
             try:
                 audio_path = glob.glob(self.raw_path + "\\**\\" + audio_name + '.wav', recursive=True)[0]
@@ -36,7 +34,6 @@ class AudioPreprocesser:
                 continue
 
             save_audio_path = audio_path.replace('raw', 'asr_processed')
-            print(save_audio_path)
             save_dir = os.path.dirname(save_audio_path)
             if not os.path.exists(save_dir):
                 os.makedirs(save_dir)
@@ -85,8 +82,6 @@ class AudioPreprocesser:
                 start, end = record_info['seconds'][0], record_info['seconds'][1]
                 audio.append(wave[start:end])
             audio = sum(audio)
-
-            # save
             audio.export(save_audio_path, format='wav')
             dataset_name = [n for n in self.config['datasets_names'] if n in save_audio_path][0]
             diagnose = self.get_diagnose(self.config, dataset_name, save_audio_path)
