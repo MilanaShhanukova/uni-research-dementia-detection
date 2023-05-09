@@ -1,0 +1,12 @@
+              precision    recall  f1-score   support
+
+           1       1.00      1.00      1.00        13
+
+    accuracy                           1.00        13
+   macro avg       1.00      1.00      1.00        13
+weighted avg       1.00      1.00      1.00        13
+
+
+CPD: confidence scores stats mean = 0.996999979019165, min = 0.9929999709129333, max = 0.9980000257492065
+Story Recall: confidence scores stats mean = 0.9980000257492065, min = 0.9959999918937683, max = 0.9980000257492065
+Conversation: confidence scores stats mean = 0.9980000257492065, min = 0.9980000257492065, max = 0.9980000257492065

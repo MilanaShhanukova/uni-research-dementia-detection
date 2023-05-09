@@ -1,0 +1,14 @@
+              precision    recall  f1-score   support
+
+     Control       0.00      0.00      0.00         0
+    Dementia       1.00      0.77      0.87        13
+
+    accuracy                           0.77        13
+   macro avg       0.50      0.38      0.43        13
+weighted avg       1.00      0.77      0.87        13
+
+CPD: confidence scores stats mean = 0.84, min = 0.669, max = 0.979
+Story Recall: confidence scores stats mean = 0.936, min = 0.796, max = 0.985
+Conversation: confidence scores stats mean = 0.975, min = 0.937, max = 0.99
+Model important features are ['syllables_per_token_mean' 'pos_prop_ADV' 'pos_prop_ADJ' 'pos_prop_AUX'
+ 'coleman_liau_index']
