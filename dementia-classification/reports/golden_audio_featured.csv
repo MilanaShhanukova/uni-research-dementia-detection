@@ -1,14 +1,14 @@
-confidence,file_name,predicted_label,task
-0.6180809855171567,1speaker_cookie.pt,Control,CPD
-0.8249907544941659,1speaker_story.pt,Dementia,Story Recall
-0.5384743993392657,2speaker_cookie.pt,Dementia,CPD
-0.6282965773630615,2speaker_story.pt,Dementia,Story Recall
-0.5849786423301558,3speaker_cookie.pt,Dementia,CPD
-0.6296272906945521,3speaker_story_recall.pt,Control,Story Recall
-0.8315352031912668,4speaker_cookie.pt,Control,CPD
-0.6839243829429326,4speaker_story.pt,Control,Story Recall
-0.9194233456936125,d6.pt,Dementia,Conversation
-0.7618083221437375,d6cookie.pt,Dementia,CPD
-0.5691346920125295,dialogue.pt,Dementia,Conversation
-0.6592511608728531,picture.pt,Dementia,Conversation
-0.7481581846379907,story.pt,Dementia,Story Recall
+confidence,file_name,predicted_label,task,speaker
+0.6180809855171567,1speaker_cookie.pt,Control,CPD,1 speaker
+0.8249907544941659,1speaker_story.pt,Dementia,Story Recall,1 speaker
+0.5384743993392657,2speaker_cookie.pt,Dementia,CPD,2 speaker
+0.6282965773630615,2speaker_story.pt,Dementia,Story Recall,2 speaker
+0.5849786423301558,3speaker_cookie.pt,Dementia,CPD,3 speaker
+0.6296272906945521,3speaker_story_recall.pt,Control,Story Recall,3 speaker
+0.8315352031912668,4speaker_cookie.pt,Control,CPD,4 speaker
+0.6839243829429326,4speaker_story.pt,Control,Story Recall,4 speaker
+0.9194233456936124,d6.pt,Dementia,Conversation,Kempler d6 speaker
+0.7618083221437375,d6cookie.pt,Dementia,CPD,Kempler d6 speaker
+0.5691346920125295,dialogue.pt,Dementia,Conversation,De Paul speaker
+0.6592511608728531,picture.pt,Dementia,CPD,De Paul speaker
+0.7481581846379907,story.pt,Dementia,Story Recall,De Paul speaker
