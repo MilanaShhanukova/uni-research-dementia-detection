@@ -1,5 +1,7 @@
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.nn as nn
+import torch.nn.functional as F
 
 
 class AttentionedModel(nn.Module):
@@ -11,8 +13,8 @@ class AttentionedModel(nn.Module):
         self.conv2 = nn.Conv2d(128, 256, 3)
         self.bn2 = nn.BatchNorm2d(256)
         self.pool2 = nn.MaxPool2d(5)
-        self.multihead = nn.MultiheadAttention(256, 8, batch_first=True)
-        self.linear_1 = nn.Linear(256 * 136, 256)
+        self.multihead = nn.MultiheadAttention(256, 4, batch_first=True)
+        self.linear_1 = nn.LazyLinear(256)
         self.linear_2 = nn.Linear(256, 1)
         self.activation = nn.ReLU()
 

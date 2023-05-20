@@ -2,6 +2,7 @@ import pandas as pd
 import torchaudio
 import torch
 import torch.nn as nn
+import numpy as np
 from sklearn.metrics import accuracy_score, f1_score, confusion_matrix, roc_curve
 from src.data.dementia_dataset import AudioDatasetExternal
 

@@ -7,9 +7,9 @@
    macro avg       0.50      0.35      0.41        13
 weighted avg       1.00      0.69      0.82        13
 
-CPD: confidence scores stats mean = 0.667, min = 0.538, max = 0.832
-Story Recall: confidence scores stats mean = 0.63, min = 0.63, max = 0.63
-Conversation: confidence scores stats mean = 0.719, min = 0.569, max = 0.919
+CPD: confidence scores stats mean = 0.628, min = 0.538, max = 0.762
+Story Recall: confidence scores stats mean = 0.734, min = 0.628, max = 0.825
+Conversation: confidence scores stats mean = 0.716, min = 0.569, max = 0.919
 Model important features are ['slopeUV0-500_sma3nz_amean' 'mfcc1_sma3_stddevNorm'
  'F0semitoneFrom27.5Hz_sma3nz_percentile80.0' 'VoicedSegmentsPerSec'
  'hammarbergIndexUV_sma3nz_amean']

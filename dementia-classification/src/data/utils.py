@@ -24,7 +24,7 @@ def runcmd(cmd, verbose = False, *args, **kwargs):
 
 def get_task(file_name):
     if "cookie" in file_name: return "CPD"
-    elif "recall" in file_name: return "Story Recall"
+    elif "recall" in file_name or "story" in file_name: return "Story Recall"
     return "Conversation"
 
 

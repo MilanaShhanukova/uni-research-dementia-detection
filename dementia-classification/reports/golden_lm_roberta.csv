@@ -1,0 +1,14 @@
+confidence,file_name,predicted_label,task
+0.9976754784584045,1speaker_cookie,1,CPD
+0.9960620999336243,1speaker_story_recall,1,Story Recall
+0.997346043586731,2speaker_cookie,1,CPD
+0.9980802536010742,2speaker_story_recall,1,Story Recall
+0.9980682730674744,3speaker_cookie,1,CPD
+0.9980775117874146,3speaker_story_recall,1,Story Recall
+0.9978874325752258,4speaker_cookie,1,CPD
+0.9979968667030334,4speaker_story_recall,1,Story Recall
+0.9980695843696594,d6,1,Conversation
+0.9930047392845154,d6cookie,1,CPD
+0.9979732632637024,dialogue,1,Conversation
+0.9978386759757996,picture,1,Conversation
+0.9980733394622803,story,1,Conversation

@@ -4,7 +4,7 @@ import pandas as pd
 
 import torch
 import torchaudio
-from utils import load_config, get_files_names
+# from utils import load_config
 
 
 class AudioDatasetExternal(Dataset):
@@ -75,9 +75,14 @@ class AudioDatasetExternal(Dataset):
 
     @staticmethod
     def split_audio_by_frames(audio_path, config):
-        audio, sr = torchaudio.load(audio_path, config['sr'])
-        audio = torch.mean(audio, 0).unsqueeze(0)
-
+        if audio_path.endswith('.wav'):
+            audio, sr = torchaudio.load(audio_path, config['sr'])
+            audio = torch.mean(audio, 0).unsqueeze(0)
+        else:
+            audio = torch.load(audio_path)
+            if audio.shape[0] != 1:
+                audio = torch.mean(audio, 0).unsqueeze(0)
+            
         split_size_samples = int(config['sr'] * config['per_second'])
         chunks = list(torch.split(audio, split_size_samples, dim=-1))
 

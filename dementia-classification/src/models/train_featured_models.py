@@ -23,13 +23,14 @@ if __name__ == "__main__":
     model = CatBoostClassifier(
         custom_loss=[metrics.Accuracy()], random_seed=24, logging_level="Silent"
     )
-
+    # drop_columns = ["Unnamed: 0", "condition", "file_name", "task", "text", "text.1"]
+    drop_columns = ['target']
     model.fit(
-        data_train.drop(columns=["Unnamed: 0", "condition", "file_name", "task", "text", "text.1"]),
-        data_train["condition"],
+        data_train.drop(columns=drop_columns),
+        data_train["target"],
         eval_set=(
-            data_test.drop(columns=["Unnamed: 0", "condition", "file_name", "task", "text", "text.1"]),
-            data_test["condition"],
+            data_test.drop(columns=drop_columns),
+            data_test["target"],
         ),
         plot=True,
     )
